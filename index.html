@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Brayan D'Velásquez">
+    <meta name="revised" content="21/05/2020">
+    <meta name="description" content="Validaciones de formulario con VueJs">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://kit.fontawesome.com/87623df937.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <title>Formulario - Validaciones con VueJs</title>
+</head>
+<body class="has-background-dark">
+    
+    <div class="section" id="app">
+        <div class="columns container section box is-multiline" style="margin: auto;">
+        
+            <div class="column is-12">
+                <h1 class="title is-3"> Formulario de Registro  </h1>
+                <p class="subtitle is-4"> Validaciones con VueJs </p>
+            </div>
+
+            <div class="column is-12">
+                <h1 class="tag is-medium is-primary">Datos personales</h1>
+            </div>
+
+            <form  
+                @change="btnRegistrarEvento" 
+                @keyup="btnRegistrarEvento" 
+                :class="['columns', 'is-multiline']"
+            >
+
+                <div class="column is-6">
+
+                    <div class="field">
+                        <label for="nombre" class="label">Nombre</label>
+                        <div class="control has-icons-right">
+                            <input type="text" id="nombre" maxlength="30"
+                                :class="['input', nombreIValidacion]" 
+                                v-model="nombreI" 
+                                @keyup="nombreIEvento"
+                            >
+
+                            <span class="icon is-small is-right">
+                                <i v-if="nombreIValidacion == 'is-danger'" class="fas fa-exclamation-triangle is-danger"></i>
+                                <i v-else-if="nombreIValidacion == 'is-success'" class="fas fa-check is-success"></i>
+                            </span>
+                            
+                            <mensaje 
+                                :mensajei="nombreIMensaje"
+                                :clase="nombreIValidacion">
+                            </mensaje>
+                        </div>
+                    </div>
+
+                </div> <!-- input -> Nombre -->
+
+                <div class="column is-6">
+
+                    <div class="field">
+                        <label for="apellido" class="label">Apellido</label>
+                        <div class="control has-icons-right">
+                            <input type="text" id="apellido" maxlength="30"
+                                :class="['input', apellidoIValidacion]" 
+                                v-model="apellidoI" 
+                                @keyup="apellidoIEvento"
+                            >
+
+                            <span class="icon is-small is-right">
+                                <i v-if="apellidoIValidacion == 'is-danger'" class="fas fa-exclamation-triangle is-danger"></i>
+                                <i v-else-if="apellidoIValidacion == 'is-success'" class="fas fa-check is-success"></i>
+                            </span>
+
+                            <mensaje 
+                                :mensajei="apellidoIMensaje"
+                            :clase="apellidoIValidacion">
+                            </mensaje>
+                
+                        </div>
+                    </div>
+
+                </div> <!-- input -> Apellido -->
+
+                <div class="column is-6">
+
+                    <div class="field">
+
+                        <label for="cedula" class="label">Cedula</label>
+                        <div class="control has-icons-right">
+                            <input type="number" id="cedula" maxlength="30"
+                                :class="['input', cedulaIValidacion]" 
+                                v-model="cedulaI" 
+                                @keyup="cedulaIEvento"
+                            >
+
+                            <span class="icon is-small is-right">
+                                <div v-if="cedulaIBusqueda == 'buscando'">
+                                    <i class="fas fa-circle-notch fa-spin"></i>
+                                </div>
+
+                                <div v-else-if="cedulaIBusqueda == 'encontrada'">
+                                    <i class="fas fa-exclamation-triangle is-danger"></i>
+                                </div>
+
+                                <div v-else-if="cedulaIBusqueda == 'noEncontrada'">
+                                    <i class="fas fa-check is-success"></i>
+                                </div>
+                            </span>
+
+                            <mensaje 
+                                :mensajei="cedulaIMensaje"
+                                :clase="cedulaIValidacion">
+                            </mensaje>
+                        </div>
+                    </div>
+
+                </div> <!-- input -> Cedula -->
+
+                <div class="column is-6">
+
+                    <label for="telefono" class="label">Telefono</label>
+                    <div class="field has-addons">
+
+                        <div class="control has-icons-right is-expanded">
+                            <input type="text" id="telefono" maxlength="30"
+                                :class="['input', telefonoIValidacion]" 
+                                v-model="telefonoI" 
+                                @keyup="telefonoIEvento"
+                            >
+
+                            <span class="icon is-small is-right">
+                                <i v-if="telefonoIValidacion == 'is-danger'" class="fas fa-exclamation-triangle is-danger"></i>
+                                <i v-else-if="telefonoIValidacion == 'is-success'" class="fas fa-check is-success"></i>
+                            </span>
+
+                            <mensaje 
+                                :mensajei="telefonoIMensaje"
+                                :clase="telefonoIValidacion">
+                            </mensaje>
+
+                        </div>
+                    </div>
+
+                </div> <!-- input -> Telefono -->
+
+                <div class="column is-6">
+
+                    <label for="correo" class="label">Correo Electronico</label>
+                    <div class="field has-addons">
+
+                        <div class="control has-icons-right is-expanded">
+                            <input type="text" id="correo" maxlength="30" 
+                            :class="['input', correoIValidacion]" v-model="correoI" @keyup="correoIEvento">
+                        </div>
+
+                        <div class="control">
+                            <div :class="['select', 'is-fullwidth', correoIValidacion]">
+                                <select v-model="correoISelect">
+                                    <option>@gmail.com</option>
+                                    <option>@yahoo.com</option>
+                                    <option>@outlook.com</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <mensaje 
+                        :mensajei="correoIMensaje"
+                        :clase="correoIValidacion">
+                    </mensaje>
+
+
+                </div> <!-- input -> Correo -->
+
+                <div class="column is-6">
+
+                    <div class="field">
+                        <label class="label">Genero</label> 
+                        <div class="control">
+                            <div :class="['select', 'is-fullwidth', generoIValidacion]">
+                                <select v-model="generoI" @change="generoIEvento">
+                                    <option value="" disabled selected>Seleccione su genero</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- select -> genero -->
+
+                <div class="column is-12">
+                    <hr>
+                </div>
+
+                <div class="column is-12">
+                    <h1 class="tag is-medium is-primary">Dirección</h1>
+                </div>
+
+                <div class="column is-12">
+
+                    <div class="field">
+                        <label for="ciudad" class="label">Ciudad donde vive</label>
+                        <div class="control has-icons-right">
+                            <input type="text" id="ciudad" maxlength="30" 
+                                v-model="direccionI" 
+                                :class="['input', direccionIValidacion]" 
+                                @keyup="direccionIEvento"
+                            >
+
+                            <span class="icon is-small is-right">
+                                <i v-if="direccionIValidacion == 'is-success'" class="fas fa-check is-success"></i>
+                                <i v-else-if="direccionIValidacion == 'is-danger'" class="fas fa-exclamation-triangle is-danger"></i>
+                            </span>
+                        </div>
+
+                    
+                        <mensaje 
+                            :mensajei="direccionIMensaje"
+                        :clase="direccionIValidacion">
+                        </mensaje>
+
+                    </div>
+
+                </div> <!-- input -> Ciudad donde vive -->
+
+                <div class="column is-12">
+
+                    <div class="field">
+                        <label for="referencia" class="label is-pulled-left">Calle y punto de referencia</label>
+                        <span class="is-pulled-right">{{calleI.length}} / 150</span>
+
+                        <div class="control has-icons-right">
+                            <textarea class="textarea" 
+                                v-model="calleI" 
+                                :class="['textarea', calleIValidacion]"
+                                @keyup="calleIEvento"
+                            ></textarea>
+                        
+
+                            <span class="icon is-small is-right">
+                                <i v-if="calleIValidacion == 'is-danger'" class="fas fa-exclamation-triangle is-danger"></i>
+                            </span>
+                        </div>
+
+                        <mensaje 
+                            :mensajei="calleIMensaje"
+                            :clase="calleIValidacion">
+                        </mensaje>
+
+                    </div>
+
+                </div> <!-- input -> Calle y punto de referencia -->
+
+                <div class="column is-12">
+
+                    <div class="field">
+                        <input type="checkbox" id="acuerdo"
+                            v-model="acuerdoI" 
+                            @change="acuerdoIEvento"
+                        >
+                        <label for="acuerdo">Yo, he leído <a>las politicas del sitio</a>. Y estoy de acuerdo con todo lo descrito.</label>
+                    </div>
+
+                </div> <!-- input -> acuerdo -->
+
+                <div class="column is-12">
+                    <hr>
+                </div> <!-- hr -->
+
+                <div class="column is-offset-8" style="padding-bottom: 30px;">
+
+                    <div v-if="btnRegistrar == false">
+                        <button class="button is-pulled-right is-success is-fullwidth is-medium" disabled>Registrarme!</button>
+                    </div>
+
+                    <div v-else>
+                        <button class="button is-pulled-right is-success is-fullwidth is-medium">Registrarme!</button>
+                    </div>
+
+                </div> <!-- btnRegistrar -->
+
+            </form>
+
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

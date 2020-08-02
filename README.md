@@ -3,4 +3,4 @@ A menida que va introduciendo los datos por teclado, en cada una de los campos, 
 
 #### Está en uso el Framework de BulmaCSS y VueJs.
 
-Link ->  https://brayandvelasquez.github.io/Formulario_ValidacionesConVueJs/
+Link ->  https://brayanduranvelasquez.github.io/Formulario_ValidacionesConVueJs/
